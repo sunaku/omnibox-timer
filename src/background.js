@@ -70,7 +70,7 @@ function tryToSetupTimer(text) {
   var seconds = parseTime(arr.shift());
   if (!seconds) {
     console.log("parse error: " + text);
-    giveFeedback("err");
+    window.alert("parse error: " + text);
     return false;
   }
 
@@ -90,7 +90,7 @@ function tryToSetupTimer(text) {
   setupTimer(timer, function(timer) {
     setupNotification(timer);
     storeTimer(timer);
-    giveFeedback("add");
+    showActiveTimerCount();
   });
 
   return true;
@@ -125,17 +125,10 @@ function loadAudios() {
   }
 }
 
-function giveFeedback(message) {
-  chrome.browserAction.setBadgeBackgroundColor({color: '#00F'});
-  chrome.browserAction.setBadgeText({text: message});
-  setTimeout(showActiveTimerCount, 3000);
-}
-
 function showActiveTimerCount() {
   chrome.storage.local.get({idCounter: 0, notificationCounter: 0}, function(object) {
-    var numActiveTimers = object.idCounter - object.notificationCounter;
-    chrome.browserAction.setBadgeBackgroundColor({color: '#F00'});
-    chrome.browserAction.setBadgeText({text: numActiveTimers > 0 ? String(numActiveTimers) : ""});
+    var count = object.idCounter - object.notificationCounter;
+    chrome.browserAction.setBadgeText({text: count > 0 ? String(count) : ""});
   });
 }
 
